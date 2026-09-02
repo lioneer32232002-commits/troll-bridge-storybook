@@ -1,4 +1,4 @@
-/* 巨魔怪的故事 — 投影用繪本 */
+/* 巨魔怪的故事 — 投影用繪本（分拍版） */
 (function () {
   'use strict';
 
@@ -11,248 +11,323 @@
   var counter = document.getElementById('counter');
   stage.appendChild(hud);
 
+  var IMG_H = 0.68;      // 圖片區佔舞台高度
+  var PANEL_H = 0.32;    // 文字面板佔舞台高度
+  var LH = 1.25;         // 行高
+  var PAD_T = 0.8;       // 面板上 padding（單位 u）
+  var PAD_B = 1.8;       // 面板下 padding（單位 u，留給拍點）
+  var PAD_X = 3.0;       // 面板左右 padding（單位 u）
+
   var slides = [];
   var cur = 0;
-  var step = 0;          // 啟發頁已點出的條目數
-  var fitted = [];       // 已完成字級計算的頁
+  var beat = 0;
+
+  /* ---------- 資料 ---------- */
+  function imgName(id) { return 'img/p' + (id < 10 ? '0' + id : id) + '.jpg'; }
+
+  // 以「頁」為單位追蹤引號狀態：遇到「進入引用，遇到」離開，
+  // 中間所有行（含沒帶引號的）都算對話行。
+  function markDialogue(beats) {
+    var inQuote = false, out = [];
+    beats.forEach(function (b) {
+      var row = [];
+      b.forEach(function (line) {
+        var isDlg = inQuote || line.indexOf('「') >= 0;
+        for (var i = 0; i < line.length; i++) {
+          if (line[i] === '「') inQuote = true;
+          else if (line[i] === '」') inQuote = false;
+        }
+        row.push({ t: line, dlg: isDlg });
+      });
+      out.push(row);
+    });
+    return out;
+  }
+
+  function beatsOf(p) {
+    var kind = p.kind || 'normal';
+    if (kind === 'lessons') return (p.items || []).map(function (x) { return [x]; });
+    if (kind === 'cover') return [[]];
+    return p.beats || [];
+  }
+  function beatCount(i) {
+    var p = PAGES[i], kind = p.kind || 'normal';
+    if (kind === 'cover') return 1;
+    if (kind === 'lessons') return (p.items || []).length;
+    return (p.beats || []).length || 1;
+  }
 
   /* ---------- 建立頁面 ---------- */
-  function imgName(id) {
-    return 'img/p' + (id < 10 ? '0' + id : id) + '.jpg';
-  }
-
-  function isDialogue(s) {
-    return s.indexOf('「') >= 0 || s.indexOf('」') >= 0;
-  }
-
-  function makeBlock(lines, cls) {
-    var b = document.createElement('div');
-    b.className = 'block' + (cls ? ' ' + cls : '');
-    lines.forEach(function (t) {
-      var d = document.createElement('div');
-      d.className = 'line' + (isDialogue(t) ? ' dlg' : '');
-      d.textContent = t;
-      b.appendChild(d);
-    });
-    return b;
-  }
-
-  function buildSlide(p, i) {
+  function buildSlide(p) {
     var kind = p.kind || 'normal';
     var s = document.createElement('section');
-    s.className = 'slide' + (kind === 'cover' || kind === 'question' ? ' overlay' : '');
+    s.className = 'slide';
     s.setAttribute('data-kind', kind);
 
     var wrap = document.createElement('div');
     wrap.className = 'imgwrap';
     var img = document.createElement('img');
-    img.alt = '';
-    img.decoding = 'async';
-    img.className = 'hide';
+    img.alt = ''; img.decoding = 'async'; img.className = 'hide';
     var ph = document.createElement('div');
     ph.className = 'ph';
     ph.textContent = '第 ' + p.id + ' 頁圖片';
-    img.addEventListener('load', function () {
-      img.classList.remove('hide');
-      ph.style.display = 'none';
-    });
-    img.addEventListener('error', function () {
-      img.classList.add('hide');
-      ph.style.display = '';
-    });
-    wrap.appendChild(img);
-    wrap.appendChild(ph);
+    img.addEventListener('load', function () { img.classList.remove('hide'); ph.style.display = 'none'; });
+    img.addEventListener('error', function () { img.classList.add('hide'); ph.style.display = ''; });
+    wrap.appendChild(img); wrap.appendChild(ph);
     s.appendChild(wrap);
 
-    var panel = document.createElement('div');
-    panel.className = 'panel';
-
     if (kind === 'cover') {
+      var ct = document.createElement('div');
+      ct.className = 'cover-text';
       var t = document.createElement('div');
-      t.className = 'cover-title';
-      t.textContent = p.title;
-      panel.appendChild(t);
+      t.className = 'cover-title'; t.textContent = p.title;
+      ct.appendChild(t);
       if (p.subtitle) {
-        var sub = document.createElement('div');
-        sub.className = 'cover-sub';
-        sub.textContent = p.subtitle;
-        panel.appendChild(sub);
+        var sb = document.createElement('div');
+        sb.className = 'cover-sub'; sb.textContent = p.subtitle;
+        ct.appendChild(sb);
       }
-    } else if (kind === 'lessons') {
-      var lt = document.createElement('div');
-      lt.className = 'lessons-title';
-      lt.textContent = p.title;
-      panel.appendChild(lt);
-      (p.items || []).forEach(function (txt, k) {
-        var it = document.createElement('div');
-        it.className = 'item';
-        var n = document.createElement('span');
-        n.className = 'num';
-        n.textContent = String(k + 1);
-        var tx = document.createElement('span');
-        tx.className = 'txt';
-        tx.textContent = txt;
-        it.appendChild(n);
-        it.appendChild(tx);
-        panel.appendChild(it);
-      });
+      s.appendChild(ct);
+      s._beats = [];
     } else {
-      if (kind === 'end' && p.title) {
-        var et = document.createElement('div');
-        et.className = 'end-title';
-        et.textContent = p.title;
-        panel.appendChild(et);
+      var panel = document.createElement('div');
+      panel.className = 'panel';
+      var content = document.createElement('div');
+      content.className = 'pcontent';
+
+      if (kind === 'lessons') {
+        var lt = document.createElement('div');
+        lt.className = 'lessons-title'; lt.textContent = p.title;
+        content.appendChild(lt);
+        var box = document.createElement('div');
+        box.className = 'items';
+        (p.items || []).forEach(function (txt, k) {
+          var it = document.createElement('div');
+          it.className = 'item';
+          var n = document.createElement('span');
+          n.className = 'num'; n.textContent = String(k + 1);
+          var tx = document.createElement('span');
+          tx.className = 'txt'; tx.textContent = txt;
+          it.appendChild(n); it.appendChild(tx);
+          box.appendChild(it);
+        });
+        content.appendChild(box);
+        s._items = box.querySelectorAll('.item');
+        s._beats = [];
+      } else {
+        if (kind === 'end' && p.title) {
+          var et = document.createElement('div');
+          et.className = 'end-title'; et.textContent = p.title;
+          content.appendChild(et);
+        }
+        var wrapB = document.createElement('div');
+        wrapB.className = 'beats';
+        var marked = markDialogue(p.beats || []);
+        marked.forEach(function (rows) {
+          var bd = document.createElement('div');
+          bd.className = 'beat';
+          rows.forEach(function (r) {
+            var d = document.createElement('div');
+            d.className = 'line' + (r.dlg ? ' dlg' : '');
+            d.textContent = r.t;
+            bd.appendChild(d);
+          });
+          wrapB.appendChild(bd);
+        });
+        content.appendChild(wrapB);
+        s._beats = wrapB.querySelectorAll('.beat');
+
+        if (kind === 'end') {
+          var a = document.createElement('a');
+          a.className = 'btn'; a.href = 'worksheet.pdf';
+          a.target = '_blank'; a.rel = 'noopener';
+          a.textContent = '下載學習單 PDF';
+          content.appendChild(a);
+        }
       }
-      if (p.text) panel.appendChild(makeBlock(p.text, 'block1'));
-      if (p.text2) panel.appendChild(makeBlock(p.text2, 'block2'));
-      if (kind === 'end') {
-        var a = document.createElement('a');
-        a.className = 'btn';
-        a.href = 'worksheet.pdf';
-        a.target = '_blank';
-        a.rel = 'noopener';
-        a.textContent = '下載學習單 PDF';
-        panel.appendChild(a);
-      }
+
+      panel.appendChild(content);
+
+      var dots = document.createElement('div');
+      dots.className = 'dots';
+      var cnt = kind === 'lessons' ? (p.items || []).length : (p.beats || []).length;
+      for (var k = 0; k < cnt; k++) dots.appendChild(document.createElement('i'));
+      if (cnt < 2) dots.classList.add('hide');
+      panel.appendChild(dots);
+      s._dots = dots.querySelectorAll('i');
+      s._panel = panel;
+      s._content = content;
+      s.appendChild(panel);
     }
 
-    s.appendChild(panel);
     s._img = img;
-    s._panel = panel;
     s._kind = kind;
     s._src = imgName(p.id);
     stage.insertBefore(s, hud);
     return s;
   }
 
-  PAGES.forEach(function (p, i) { slides.push(buildSlide(p, i)); });
+  PAGES.forEach(function (p) { slides.push(buildSlide(p)); });
 
-  /* ---------- 尺寸與字級 ---------- */
-  var RANGE = {
-    normal:   { max: 3.30, min: 2.35, h: 0.505 },
-    end:      { max: 3.30, min: 2.40, h: 0.545 },
-    lessons:  { max: 3.30, min: 2.20, h: 0.545 },
-    cover:    { max: 3.10, min: 2.00, h: 0.62 },
-    question: { max: 8.60, min: 4.00, h: 0.80 }
-  };
+  /* ---------- 字級計算 ---------- */
+  function setVar(name, px) { document.documentElement.style.setProperty(name, px + 'px'); }
 
-  function setU() {
-    var r = stage.getBoundingClientRect();
-    document.documentElement.style.setProperty('--u', (r.width / 100) + 'px');
-    return r;
-  }
-
-  function fits(s, maxH) {
-    var panel = s._panel;
-    if (panel.scrollWidth > panel.clientWidth + 1) return false;
-    if (panel.offsetHeight > maxH + 0.5) return false;
-    var els = panel.querySelectorAll('.line,.cover-title,.cover-sub,.lessons-title,.end-title,.txt,.btn');
-    for (var i = 0; i < els.length; i++) {
-      var e = els[i];
-      if (e.scrollWidth > e.clientWidth + 1) return false;
-      if (e.getBoundingClientRect().width > panel.clientWidth + 1) return false;
+  // 把「這一組」所有狀態逐一擺出來，回傳檢查函式用的狀態走訪器
+  function eachState(kinds, fn) {
+    for (var i = 0; i < N; i++) {
+      var s = slides[i];
+      if (kinds.indexOf(s._kind) < 0) continue;
+      if (s._kind === 'lessons') {
+        applyLessons(i, beatCount(i) - 1);   // 全部點出＝最高的狀態
+        if (fn(s, i) === false) return false;
+      } else {
+        for (var b = 0; b < s._beats.length; b++) {
+          showBeatEl(s, b);
+          if (fn(s, i) === false) return false;
+        }
+      }
     }
     return true;
   }
 
-  function fit(idx) {
-    var s = slides[idx];
-    if (!s) return;
-    var rect = stage.getBoundingClientRect();
-    var u = rect.width / 100;
-    var cfg = RANGE[s._kind] || RANGE.normal;
-    var maxH = rect.height * cfg.h;
+  function panelFits(s) {
     var panel = s._panel;
-    var wasHidden = !s.classList.contains('on');
-    if (wasHidden) { s.style.visibility = 'hidden'; s.style.opacity = '0'; s.style.display = 'flex'; s.classList.add('measuring'); }
-    var f = cfg.max, best = cfg.min;
-    while (f >= cfg.min - 0.001) {
-      panel.style.setProperty('--fs', (f * u) + 'px');
-      if (fits(s, maxH)) { best = f; break; }
-      f -= 0.04;
+    if (!panel) return true;
+    if (panel.scrollHeight > panel.clientHeight + 1) return false;
+    if (panel.scrollWidth > panel.clientWidth + 1) return false;
+    var els = panel.querySelectorAll('.beat.on .line, .item, .lessons-title, .end-title, .btn');
+    for (var i = 0; i < els.length; i++) {
+      var e = els[i];
+      if (e.scrollWidth > e.clientWidth + 1) return false;
+      if (e.getClientRects().length !== 1) return false;
     }
-    panel.style.setProperty('--fs', (best * u) + 'px');
-    if (wasHidden) { s.style.visibility = ''; s.style.opacity = ''; s.style.display = ''; s.classList.remove('measuring'); }
-    fitted[idx] = rect.width;
+    return true;
   }
 
-  function ensureFit(idx) {
-    var w = stage.getBoundingClientRect().width;
-    if (fitted[idx] !== w) fit(idx);
+  // 用 100px 參考字級量一次，直接換算出「不溢出的最大字級」，再實測校正
+  var REF = 100;
+  // 在目前字級 curFs 下量測，回推「剛好不溢出」的字級
+  function measureGroup(kinds, availH, availW, curFs) {
+    var best = Infinity;
+    eachState(kinds, function (s) {
+      var c = s._content;
+      if (!c) return;
+      var h = c.getBoundingClientRect().height;
+      if (h > 0) best = Math.min(best, curFs * availH / h);
+      var maxW = c.scrollWidth;
+      var els = c.querySelectorAll('.beat.on .line, .item, .lessons-title, .end-title, .btn');
+      for (var i = 0; i < els.length; i++) {
+        maxW = Math.max(maxW, els[i].scrollWidth, els[i].offsetWidth);
+      }
+      if (maxW > 0) best = Math.min(best, curFs * availW / maxW);
+    });
+    return best;
   }
 
-  function relayout() {
-    setU();
-    fitted = [];
-    ensureFit(cur);
-    ensureFit(cur + 1);
-    ensureFit(cur - 1);
+  function bestFit(kinds, varName, availH, availW) {
+    setVar(varName, REF);
+    var est = measureGroup(kinds, availH, availW, REF);
+    if (!isFinite(est)) est = 40;
+    var fs = Math.max(8, Math.floor(est));
+    for (var k = 0; k < 6; k++) {
+      setVar(varName, fs);
+      if (eachState(kinds, function (s) { return panelFits(s); })) break;
+      var re = Math.floor(measureGroup(kinds, availH, availW, fs));
+      fs = Math.max(8, Math.min(fs - 1, isFinite(re) ? re : fs - 1));
+    }
+    return fs;
   }
 
-  /* ---------- 圖片載入 ---------- */
-  function loadImg(idx) {
-    var s = slides[idx];
+  function computeSizes() {
+    var t0 = (window.performance || Date).now();
+    document.documentElement.classList.add('measuring');
+    try {
+      var rect = stage.getBoundingClientRect();
+      var W = rect.width, H = rect.height, u = W / 100;
+      document.documentElement.style.setProperty('--u', u + 'px');
+
+      var availH = H * PANEL_H - (PAD_T + PAD_B) * u;
+      var availW = W - 2 * PAD_X * u;
+
+      // 故事頁（normal + question）：全站所有拍取同一個字級，翻頁不跳動
+      var fsA = bestFit(['normal', 'question'], '--fs', availH, availW);
+      // 啟發頁、結尾頁有標題／按鈕，內容高度不同，各自一組
+      var fsL = bestFit(['lessons'], '--fsL', availH, availW);
+      var fsE = bestFit(['end'], '--fsE', availH, availW);
+
+      sizes = { fs: fsA, fsL: fsL, fsE: fsE, stage: [W, H], availH: availH, availW: availW,
+                ms: Math.round((window.performance || Date).now() - t0) };
+    } finally {
+      document.documentElement.classList.remove('measuring');
+      restore();
+    }
+    return sizes;
+  }
+  var sizes = null;
+
+  /* ---------- 顯示 ---------- */
+  function showBeatEl(s, b) {
+    for (var i = 0; i < s._beats.length; i++) s._beats[i].classList.toggle('on', i === b);
+  }
+  function applyLessons(i, b) {
+    var s = slides[i];
+    if (!s._items) return;
+    for (var k = 0; k < s._items.length; k++) {
+      s._items[k].classList.toggle('show', k <= b);
+      s._items[k].classList.toggle('past', k < b);
+    }
+  }
+  function applyDots(i, b) {
+    var s = slides[i];
+    if (!s._dots) return;
+    for (var k = 0; k < s._dots.length; k++) s._dots[k].classList.toggle('on', k === b);
+  }
+  function restore() { render(); }
+
+  function render() {
+    var s = slides[cur];
+    if (s._kind === 'lessons') applyLessons(cur, beat);
+    else if (s._beats && s._beats.length) showBeatEl(s, beat);
+    applyDots(cur, beat);
+    // 其他頁把拍歸零，避免測量後殘留
+    for (var i = 0; i < N; i++) {
+      if (i === cur) continue;
+      var o = slides[i];
+      if (o._kind === 'lessons') applyLessons(i, -1);
+      else if (o._beats && o._beats.length) showBeatEl(o, 0);
+      applyDots(i, 0);
+    }
+  }
+
+  function loadImg(i) {
+    var s = slides[i];
     if (!s || s._img.getAttribute('src')) return;
     s._img.src = s._src;
   }
-  function preload(idx) {
-    var s = slides[idx];
-    if (!s) return;
-    loadImg(idx);
-  }
 
-  /* ---------- 顯示 ---------- */
-  function applyLessons(idx) {
-    var s = slides[idx];
-    if (!s || s._kind !== 'lessons') return;
-    var items = s._panel.querySelectorAll('.item');
-    for (var i = 0; i < items.length; i++) {
-      items[i].classList.toggle('show', i < step);
-    }
-  }
-
-  function show(idx, opt) {
-    idx = Math.max(0, Math.min(N - 1, idx));
-    var back = opt && opt.back;
-    if (idx !== cur || (opt && opt.force)) {
-      slides[cur].classList.remove('on');
-      cur = idx;
-    }
-    var s = slides[cur];
-    if (s._kind === 'lessons') {
-      if (opt && opt.keepStep) { /* 保留 */ }
-      else step = back ? (PAGES[cur].items || []).length : 0;
-      applyLessons(cur);
-    }
-    loadImg(cur);
-    ensureFit(cur);
-    s.classList.add('on');
+  function show(i, b) {
+    i = Math.max(0, Math.min(N - 1, i));
+    if (i !== cur) slides[cur].classList.remove('on');
+    cur = i;
+    var cnt = beatCount(i);
+    beat = b === 'last' ? cnt - 1 : Math.max(0, Math.min(cnt - 1, b || 0));
+    render();
+    loadImg(cur); loadImg(cur + 1); loadImg(cur - 1);
+    slides[cur].classList.add('on');
     counter.textContent = (cur + 1) + ' / ' + N;
     var h = '#p' + (cur + 1);
     if (location.hash !== h) {
       try { history.replaceState(null, '', h); } catch (e) { location.hash = h; }
     }
-    // 預載前後
-    preload(cur + 1);
-    preload(cur - 1);
-    setTimeout(function () { ensureFit(cur + 1); ensureFit(cur - 1); }, 60);
   }
 
   function next() {
-    var s = slides[cur];
-    if (s._kind === 'lessons') {
-      var total = (PAGES[cur].items || []).length;
-      if (step < total) { step++; applyLessons(cur); return; }
-    }
-    if (cur < N - 1) show(cur + 1);
+    if (beat < beatCount(cur) - 1) { beat++; render(); return; }
+    if (cur < N - 1) show(cur + 1, 0);
   }
-
   function prev() {
-    var s = slides[cur];
-    if (s._kind === 'lessons') {
-      if (step > 0) { step--; applyLessons(cur); return; }
-    }
-    if (cur > 0) show(cur - 1, { back: true });
+    if (beat > 0) { beat--; render(); return; }
+    if (cur > 0) show(cur - 1, 'last');
   }
 
   /* ---------- 操作 ---------- */
@@ -262,10 +337,9 @@
     if (k === 'ArrowRight' || k === 'ArrowDown' || k === ' ' || k === 'Spacebar' ||
         c === 'Space' || k === 'PageDown' || k === 'Enter') { e.preventDefault(); next(); }
     else if (k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp' || k === 'Backspace') { e.preventDefault(); prev(); }
-    else if (k === 'Home') { e.preventDefault(); show(0); }
-    else if (k === 'End') { e.preventDefault(); show(N - 1); }
+    else if (k === 'Home') { e.preventDefault(); show(0, 0); }
+    else if (k === 'End') { e.preventDefault(); show(N - 1, 'last'); }
     else if (k === 'f' || k === 'F') { e.preventDefault(); toggleFull(); }
-    else if (k === 'Escape' && document.fullscreenElement) { /* 瀏覽器自行處理 */ }
   });
 
   stage.addEventListener('click', function (e) {
@@ -286,58 +360,58 @@
     var dx = t.clientX - tx, dy = t.clientY - ty;
     if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) {
       if (e.target.closest && e.target.closest('a,button')) return;
-      e.preventDefault();
+      if (e.cancelable) e.preventDefault();
       if (dx < 0) next(); else prev();
     }
   }, { passive: false });
 
   function toggleFull() {
     try {
-      var el = document.documentElement;
-      var p;
+      var el = document.documentElement, p;
       if (!document.fullscreenElement) {
         p = (el.requestFullscreen || el.webkitRequestFullscreen || function () {}).call(el);
       } else {
         p = (document.exitFullscreen || document.webkitExitFullscreen || function () {}).call(document);
       }
       if (p && p.catch) p.catch(function () {});
-    } catch (e) { /* 忽略：全螢幕被瀏覽器擋下不影響翻頁 */ }
+    } catch (e) { /* 全螢幕被擋下不影響翻頁 */ }
   }
 
   window.addEventListener('resize', function () {
     clearTimeout(window.__rt);
-    window.__rt = setTimeout(relayout, 80);
+    window.__rt = setTimeout(computeSizes, 80);
   });
 
   window.addEventListener('hashchange', function () {
     var m = /^#p(\d+)$/.exec(location.hash);
     if (m) {
       var n = parseInt(m[1], 10) - 1;
-      if (n >= 0 && n < N && n !== cur) show(n);
+      if (n >= 0 && n < N && n !== cur) show(n, 0);
     }
   });
 
   /* ---------- 啟動 ---------- */
   function start() {
-    setU();
     var m = /^#p(\d+)$/.exec(location.hash);
     var i = m ? Math.min(N - 1, Math.max(0, parseInt(m[1], 10) - 1)) : 0;
-    show(i, { force: true });
-    setTimeout(function () { for (var k = 0; k < N; k++) ensureFit(k); }, 200);
+    cur = i; beat = 0;
+    computeSizes();
+    show(i, 0);
   }
 
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(start);
-    setTimeout(function () { if (fitted.length === 0) start(); }, 2500);
-  } else {
-    start();
-  }
+    setTimeout(function () { if (!sizes) start(); }, 2500);
+  } else { start(); }
 
-  // 供測試使用
+  /* 測試用 */
   window.__deck = {
-    go: function (n) { show(n); },
+    go: function (n, b) { show(n, b || 0); },
     next: next, prev: prev,
-    state: function () { return { cur: cur, step: step, n: N }; },
-    fitAll: function () { for (var k = 0; k < N; k++) ensureFit(k); }
+    state: function () { return { cur: cur, beat: beat, beats: beatCount(cur), n: N }; },
+    sizes: function () { return sizes; },
+    recompute: function () { return computeSizes(); },
+    beatCount: beatCount,
+    slides: slides
   };
 })();

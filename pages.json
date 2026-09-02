@@ -1,39 +1,235 @@
 {
-  "title": "巨魔怪的故事",
-  "style": "Illustration in the style of Jean-Jacques Sempé: delicate, thin, slightly wobbly ink line drawing with soft, translucent light watercolor washes, generous white space, gentle whimsical humor, small expressive figures placed in a spacious scene. Muted pastel palette: sage green, pale sky blue, warm ochre, dusty rose, one small red accent. Landscape 16:9 aspect ratio, clean white paper background. Absolutely NO text, NO letters, NO captions, NO speech bubbles, NO signature.",
-  "characters": "CHARACTERS (keep identical in every picture): TOM = a small 10-year-old boy with tousled chestnut-brown hair, blue-and-white horizontal striped T-shirt, brown shorts, red sneakers. LILY = his 12-year-old sister, two dark braids, plain yellow dress, white socks. TROLL = an enormous shaggy moss-green troll, round belly, long droopy bulbous nose, two tiny stubby horns, big round yellow eyes, mossy tufts on shoulders, he lives under an old grey stone arch bridge. SETTING = a quiet English countryside village: rolling green hills, a slow river with reeds, willow trees, small cottages with chimneys in the distance, an old moss-covered grey stone arch bridge.",
-  "pages": [
-    {"id": 1, "kind": "cover", "title": "巨魔怪的故事", "subtitle": "一個關於機智與勇氣的英國鄉村傳說",
-     "prompt": "Cover picture. Wide view of the quiet English village on a soft summer day: the old grey stone arch bridge over the slow river in the middle distance, willow trees, tiny cottages on the hills. Two tiny children (TOM and LILY) stand hand in hand on the path looking toward the bridge. Under the bridge arch, only two big round yellow eyes of the TROLL glow in the shadow. Lots of sky and white space above for a title."},
-    {"id": 2, "text": ["在一個寧靜的英國鄉村，", "有一座非常古老的橋。"], "text2": ["大人們總是說：", "「沒事千萬別經過那座橋！」", "因為橋下住著", "會吞噬靈魂的巨魔怪。"],
-     "prompt": "The old moss-covered stone arch bridge over the river, seen from the village side. A group of village grown-ups (a farmer, a vicar, a lady with a shopping basket, a policeman) stand at a safe distance wagging their fingers and pointing at the bridge with worried faces. TOM and LILY, small, listen with wide eyes. In the dark shadow under the arch, the TROLL's two yellow eyes glow."},
-    {"id": 3, "text": ["有一天，", "十歲的小男孩追著", "十二歲的姐姐跑，", "一不小心，", "跑到了那座橋上。"],
-     "prompt": "TOM, laughing, chases LILY across the meadow; LILY has just leapt aside off the path, and TOM, not looking, is running straight onto the old stone arch bridge. Motion lines, a startled bird flying up. Sunny afternoon, long grass, the river below."},
-    {"id": 4, "text": ["巨魔怪從橋下竄了出來，", "怒吼：", "「我要吃掉你的靈魂！」"],
-     "prompt": "Dramatic but funny: the huge moss-green TROLL bursts up from under the stone bridge, gripping the parapet with both hairy hands, mouth wide open in a roar, tiny TOM frozen mid-step on the bridge with his hair standing on end. LILY peeks from behind a willow tree. Water splashes."},
-    {"id": 5, "text": ["小男孩嚇壞了，", "卻靈機一動：", "「不要吃我！", "我姐姐比較好吃，", "你吃她就好了！」"], "text2": ["巨魔怪搖搖頭：", "「不！我要吃你！」"],
-     "prompt": "On the bridge, tiny TOM, trembling but sly, points a thumb over his shoulder toward LILY who stands at the end of the bridge with hands on hips, outraged. The giant TROLL leans over the parapet, shaking his head with his eyes closed and a stubborn frown, index finger raised."},
-    {"id": 6, "text": ["小男孩又說：", "「可是我還沒學會", "用門牙縫吹口哨啊！", "我的生命經驗太貧乏了，", "一點都不好吃！", "等我學會了再來給你吃，", "好不好？」"],
-     "prompt": "Close-up on the bridge: tiny TOM stands on tiptoe, puffing his cheeks and pointing at his two front teeth while trying to whistle, small puff of air. The huge TROLL bends down very close, one big yellow eye squinting curiously at the boy's mouth, one hairy finger on his chin. Willow branches frame the scene."},
-    {"id": 7, "text": ["巨魔怪摸了摸下巴，", "想了想，", "居然點頭答應了。"], "text2": ["小男孩逃過一劫。", "從此，他和姐姐", "再也不敢踏上那座橋。"],
-     "prompt": "Wide scene: the TROLL, sitting on the bridge parapet, scratches his chin and nods slowly with a puzzled smile. Far away on the meadow path, TOM and LILY run home as fast as they can, tiny figures with dust clouds, toward the cottages on the hill. Sunset colors, long shadows."},
-    {"id": 8, "text": ["多年後，小男孩長大了。", "他談了戀愛，", "戀愛讓人變得盲目。"], "text2": ["他忘了那個禁忌，", "帶著女朋友", "走上了那座橋。"],
-     "prompt": "Years later. TOM is now a lanky teenager with the same tousled chestnut-brown hair, wearing a blue-and-white striped scarf and a green jacket. He walks dreamily onto the old stone bridge arm in arm with his girlfriend ROSE (a girl with a red beret and curly blonde hair), both gazing at each other with little hearts floating around them, not noticing the bridge. Spring, blossoms on the trees, ducks on the river. Under the arch the TROLL's yellow eyes open wide."},
-    {"id": 9, "text": ["巨魔怪再次出現：", "「哇哈哈！", "我等你好久了！", "你一定學會吹口哨了吧？", "現在可以給我吃了！」"],
-     "prompt": "The TROLL pops up beside the bridge, delighted, arms spread wide, laughing with a huge toothy grin, drumming his belly. Teenage TOM (green jacket, striped scarf) and ROSE (red beret) jump apart in fright on the bridge, ROSE's beret flying off."},
-    {"id": 10, "text": ["男孩又耍起小聰明：", "「不要吃我！", "我女朋友比較好吃！」"], "text2": ["巨魔怪仍然搖頭：", "「不！我要吃你！」"],
-     "prompt": "Teenage TOM (green jacket, striped scarf) points sheepishly at ROSE (red beret), who glares at him with crossed arms and steam puffing from her ears. The TROLL, leaning over the parapet, shakes his head firmly with a stubborn pout and one finger raised, exactly as before."},
-    {"id": 11, "text": ["男孩靈機一動：", "「可是我還沒學會", "怎麼好好愛一個人啊！", "我的生命經驗還是太貧乏了！", "你說對不對？」"], "text2": ["巨魔怪猶豫了，", "最後又答應了。"],
-     "prompt": "Teenage TOM (green jacket, striped scarf) spreads his hands and shrugs with an innocent, pleading face while ROSE (red beret) rolls her eyes. The TROLL sits down heavily on the riverbank, chin in both hands, thinking hard, a small question mark of steam above his head, then a reluctant nod. Evening light."},
-    {"id": 12, "text": ["又過了很多年，", "男孩變成了老爺爺。"], "text2": ["他到城市讀書、工作、", "成家，最後退休，", "回到了兒時的家鄉。", "「現在的我，", "早已不是當年那個孩子了。」"],
-     "prompt": "Many years later. Old TOM, now a small old man with white tousled hair, round spectacles, a brown tweed coat, a blue-and-white striped scarf and a walking cane, carrying a suitcase, stands on the hill path looking down at the unchanged village and the old stone bridge in autumn. Golden leaves falling, a little smile of nostalgia. Very small figure in a big landscape."},
-    {"id": 13, "text": ["他不知不覺，", "又走上了那座橋。"], "text2": ["巨魔怪再一次出現，", "但牠的聲音變得蒼老，", "氣若游絲：", "「啊……我要吃掉你的靈魂……」"],
-     "prompt": "Old TOM (white hair, brown tweed coat, striped scarf, cane) stands in the middle of the old stone bridge. Beside him the TROLL slowly rises from under the arch, but he is now an OLD troll: thinner, moss turned grey-white, long white beard, drooping ears, hunched, leaning on the parapet for support, one weak hand raised, mouth open in a tiny feeble roar with three little sound puffs. Misty grey-blue autumn evening, quiet and melancholy, a few falling leaves."},
-    {"id": 14, "kind": "question", "text": ["結局會怎麼樣呢？"], "text2": ["換你來寫！"],
-     "prompt": "The old stone bridge at dusk, seen from the riverbank, completely empty and silent: only old TOM's walking cane and suitcase left standing on the bridge, and the old TROLL's two faint yellow eyes under the arch. A huge cloud shaped like a question mark floats in the sky above. Lots of empty space."},
-    {"id": 15, "kind": "lessons", "title": "三個啟發", "items": ["龐大的不一定聰明，反而容易被愚弄！", "智慧比蠻力更重要，機智才能戰勝強敵！", "有些問題無法逃避，最終必須勇敢面對！"],
-     "prompt": "Decorative vignette: three small scenes side by side on white paper, like a strip. Left: tiny TOM as a boy outwits the huge puzzled TROLL. Middle: a lightbulb glowing above teenage TOM's head while the TROLL scratches his head. Right: old TOM and the old TROLL sit side by side on the bridge parapet watching the sunset together. Lots of white space between vignettes."},
-    {"id": 16, "kind": "end", "title": "故事接寫", "text": ["請拿出學習單，", "為這個故事寫下你的結局。"],
-     "prompt": "An open blank sketchbook lying on the grass beside the river, a pencil resting on it, and a small watercolor brush; in the background the old stone bridge under a soft morning sky. Tiny TOM as a boy sits at the edge, looking over his shoulder invitingly at the viewer. Lots of white space."}
-  ]
+ "title": "巨魔怪的故事",
+ "style": "Illustration in the style of Jean-Jacques Sempé: delicate, thin, slightly wobbly ink line drawing with soft, translucent light watercolor washes, generous white space, gentle whimsical humor, small expressive figures placed in a spacious scene. Muted pastel palette: sage green, pale sky blue, warm ochre, dusty rose, one small red accent. Landscape 16:9 aspect ratio, clean white paper background. Absolutely NO text, NO letters, NO captions, NO speech bubbles, NO signature.",
+ "characters": "CHARACTERS (keep identical in every picture): TOM = a small 10-year-old boy with tousled chestnut-brown hair, blue-and-white horizontal striped T-shirt, brown shorts, red sneakers. LILY = his 12-year-old sister, two dark braids, plain yellow dress, white socks. TROLL = an enormous shaggy moss-green troll, round belly, long droopy bulbous nose, two tiny stubby horns, big round yellow eyes, mossy tufts on shoulders, he lives under an old grey stone arch bridge. SETTING = a quiet English countryside village: rolling green hills, a slow river with reeds, willow trees, small cottages with chimneys in the distance, an old moss-covered grey stone arch bridge.",
+ "pages": [
+  {
+   "id": 1,
+   "kind": "cover",
+   "title": "巨魔怪的故事",
+   "subtitle": "一個關於機智與勇氣的英國鄉村傳說",
+   "prompt": "Cover picture. Wide view of the quiet English village on a soft summer day: the old grey stone arch bridge over the slow river in the middle distance, willow trees, tiny cottages on the hills. Two tiny children (TOM and LILY) stand hand in hand on the path looking toward the bridge. Under the bridge arch, only two big round yellow eyes of the TROLL glow in the shadow. Lots of sky and white space above for a title."
+  },
+  {
+   "id": 2,
+   "prompt": "The old moss-covered stone arch bridge over the river, seen from the village side. A group of village grown-ups (a farmer, a vicar, a lady with a shopping basket, a policeman) stand at a safe distance wagging their fingers and pointing at the bridge with worried faces. TOM and LILY, small, listen with wide eyes. In the dark shadow under the arch, the TROLL's two yellow eyes glow.",
+   "beats": [
+    [
+     "在一個寧靜的英國鄉村，",
+     "有一座非常古老的橋。"
+    ],
+    [
+     "大人們總是說：",
+     "「沒事千萬別經過那座橋！」",
+     "因為橋下住著",
+     "會吞噬靈魂的巨魔怪。"
+    ]
+   ]
+  },
+  {
+   "id": 3,
+   "prompt": "TOM, laughing, chases LILY across the meadow; LILY has just leapt aside off the path, and TOM, not looking, is running straight onto the old stone arch bridge. Motion lines, a startled bird flying up. Sunny afternoon, long grass, the river below.",
+   "beats": [
+    [
+     "有一天，十歲的小男孩",
+     "追著十二歲的姐姐跑，",
+     "一不小心，",
+     "跑到了那座橋上。"
+    ]
+   ]
+  },
+  {
+   "id": 4,
+   "prompt": "Dramatic but funny: the huge moss-green TROLL bursts up from under the stone bridge, gripping the parapet with both hairy hands, mouth wide open in a roar, tiny TOM frozen mid-step on the bridge with his hair standing on end. LILY peeks from behind a willow tree. Water splashes.",
+   "beats": [
+    [
+     "巨魔怪從橋下竄了出來，",
+     "怒吼：",
+     "「我要吃掉你的靈魂！」"
+    ]
+   ]
+  },
+  {
+   "id": 5,
+   "prompt": "On the bridge, tiny TOM, trembling but sly, points a thumb over his shoulder toward LILY who stands at the end of the bridge with hands on hips, outraged. The giant TROLL leans over the parapet, shaking his head with his eyes closed and a stubborn frown, index finger raised.",
+   "beats": [
+    [
+     "小男孩嚇壞了，卻靈機一動：",
+     "「不要吃我！",
+     "我姐姐比較好吃，",
+     "你吃她就好了！」"
+    ],
+    [
+     "巨魔怪搖搖頭：",
+     "「不！我要吃你！」"
+    ]
+   ]
+  },
+  {
+   "id": 6,
+   "prompt": "Close-up on the bridge: tiny TOM stands on tiptoe, puffing his cheeks and pointing at his two front teeth while trying to whistle, small puff of air. The huge TROLL bends down very close, one big yellow eye squinting curiously at the boy's mouth, one hairy finger on his chin. Willow branches frame the scene.",
+   "beats": [
+    [
+     "小男孩又說：",
+     "「可是我還沒學會",
+     "用門牙縫吹口哨啊！"
+    ],
+    [
+     "我的生命經驗太貧乏了，",
+     "一點都不好吃！",
+     "等我學會了再來給你吃，",
+     "好不好？」"
+    ]
+   ]
+  },
+  {
+   "id": 7,
+   "prompt": "Wide scene: the TROLL, sitting on the bridge parapet, scratches his chin and nods slowly with a puzzled smile. Far away on the meadow path, TOM and LILY run home as fast as they can, tiny figures with dust clouds, toward the cottages on the hill. Sunset colors, long shadows.",
+   "beats": [
+    [
+     "巨魔怪摸了摸下巴，想了想，",
+     "居然點頭答應了。"
+    ],
+    [
+     "小男孩逃過一劫。",
+     "從此，他和姐姐",
+     "再也不敢踏上那座橋。"
+    ]
+   ]
+  },
+  {
+   "id": 8,
+   "prompt": "Years later. TOM is now a lanky teenager with the same tousled chestnut-brown hair, wearing a blue-and-white striped scarf and a green jacket. He walks dreamily onto the old stone bridge arm in arm with his girlfriend ROSE (a girl with a red beret and curly blonde hair), both gazing at each other with little hearts floating around them, not noticing the bridge. Spring, blossoms on the trees, ducks on the river. Under the arch the TROLL's yellow eyes open wide.",
+   "beats": [
+    [
+     "多年後，小男孩長大了。",
+     "他談了戀愛，",
+     "戀愛讓人變得盲目。"
+    ],
+    [
+     "他忘了那個禁忌，",
+     "帶著女朋友走上了那座橋。"
+    ]
+   ]
+  },
+  {
+   "id": 9,
+   "prompt": "The TROLL pops up beside the bridge, delighted, arms spread wide, laughing with a huge toothy grin, drumming his belly. Teenage TOM (green jacket, striped scarf) and ROSE (red beret) jump apart in fright on the bridge, ROSE's beret flying off.",
+   "beats": [
+    [
+     "巨魔怪再次出現：",
+     "「哇哈哈！我等你好久了！",
+     "你一定學會吹口哨了吧？",
+     "現在可以給我吃了！」"
+    ]
+   ]
+  },
+  {
+   "id": 10,
+   "prompt": "Teenage TOM (green jacket, striped scarf) points sheepishly at ROSE (red beret), who glares at him with crossed arms and steam puffing from her ears. The TROLL, leaning over the parapet, shakes his head firmly with a stubborn pout and one finger raised, exactly as before.",
+   "beats": [
+    [
+     "男孩又耍起小聰明：",
+     "「不要吃我！",
+     "我女朋友比較好吃！」"
+    ],
+    [
+     "巨魔怪仍然搖頭：",
+     "「不！我要吃你！」"
+    ]
+   ]
+  },
+  {
+   "id": 11,
+   "prompt": "Teenage TOM (green jacket, striped scarf) spreads his hands and shrugs with an innocent, pleading face while ROSE (red beret) rolls her eyes. The TROLL sits down heavily on the riverbank, chin in both hands, thinking hard, a small question mark of steam above his head, then a reluctant nod. Evening light.",
+   "beats": [
+    [
+     "男孩靈機一動：",
+     "「可是我還沒學會",
+     "怎麼好好愛一個人啊！"
+    ],
+    [
+     "我的生命經驗還是太貧乏了！",
+     "你說對不對？」"
+    ],
+    [
+     "巨魔怪猶豫了，",
+     "最後又答應了。"
+    ]
+   ]
+  },
+  {
+   "id": 12,
+   "prompt": "Many years later. Old TOM, now a small old man with white tousled hair, round spectacles, a brown tweed coat, a blue-and-white striped scarf and a walking cane, carrying a suitcase, stands on the hill path looking down at the unchanged village and the old stone bridge in autumn. Golden leaves falling, a little smile of nostalgia. Very small figure in a big landscape.",
+   "beats": [
+    [
+     "又過了很多年，",
+     "男孩變成了老爺爺。"
+    ],
+    [
+     "他到城市讀書、工作、成家，",
+     "最後退休，回到了兒時的家鄉。"
+    ],
+    [
+     "「現在的我，",
+     "早已不是當年那個孩子了。」"
+    ]
+   ]
+  },
+  {
+   "id": 13,
+   "prompt": "Old TOM (white hair, brown tweed coat, striped scarf, cane) stands in the middle of the old stone bridge. Beside him the TROLL slowly rises from under the arch, but he is now an OLD troll: thinner, moss turned grey-white, long white beard, drooping ears, hunched, leaning on the parapet for support, one weak hand raised, mouth open in a tiny feeble roar with three little sound puffs. Misty grey-blue autumn evening, quiet and melancholy, a few falling leaves.",
+   "beats": [
+    [
+     "他不知不覺，",
+     "又走上了那座橋。"
+    ],
+    [
+     "巨魔怪再一次出現，",
+     "但牠的聲音變得蒼老，",
+     "氣若游絲："
+    ],
+    [
+     "「啊……我要吃掉你的靈魂……」"
+    ]
+   ]
+  },
+  {
+   "id": 14,
+   "kind": "question",
+   "prompt": "The old stone bridge at dusk, seen from the riverbank, completely empty and silent: only old TOM's walking cane and suitcase left standing on the bridge, and the old TROLL's two faint yellow eyes under the arch. A huge cloud shaped like a question mark floats in the sky above. Lots of empty space.",
+   "beats": [
+    [
+     "結局會怎麼樣呢？"
+    ],
+    [
+     "換你來寫！"
+    ]
+   ]
+  },
+  {
+   "id": 15,
+   "kind": "lessons",
+   "title": "三個啟發",
+   "items": [
+    "龐大的不一定聰明，反而容易被愚弄！",
+    "智慧比蠻力更重要，機智才能戰勝強敵！",
+    "有些問題無法逃避，最終必須勇敢面對！"
+   ],
+   "prompt": "Decorative vignette: three small scenes side by side on white paper, like a strip. Left: tiny TOM as a boy outwits the huge puzzled TROLL. Middle: a lightbulb glowing above teenage TOM's head while the TROLL scratches his head. Right: old TOM and the old TROLL sit side by side on the bridge parapet watching the sunset together. Lots of white space between vignettes."
+  },
+  {
+   "id": 16,
+   "kind": "end",
+   "title": "故事接寫",
+   "prompt": "An open blank sketchbook lying on the grass beside the river, a pencil resting on it, and a small watercolor brush; in the background the old stone bridge under a soft morning sky. Tiny TOM as a boy sits at the edge, looking over his shoulder invitingly at the viewer. Lots of white space.",
+   "beats": [
+    [
+     "請拿出學習單，",
+     "為這個故事寫下你的結局。"
+    ]
+   ]
+  }
+ ],
+ "layout_note": "每頁 beats = 逐拍顯示的文字段落；一拍最多 4 行、一行最多 14 字；一個字串就是一行，不可再自動換行。圖片固定佔上方約 68% 高度。"
 }

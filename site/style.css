@@ -4,8 +4,9 @@
   --bg:#14171c;
   --ink:#f5f0e6;
   --dlg:#ffd27a;
-  --mat:#1c2027;
-  --line:rgba(245,240,230,.18);
+  --fs:60px;                /* 故事頁統一字級，由 app.js 計算 */
+  --fsL:48px;               /* 啟發頁 */
+  --fsE:48px;               /* 結尾頁 */
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
@@ -27,174 +28,157 @@ body{
   height:min(56.25vw, 100vh);
   overflow:hidden;
   background:var(--bg);
-  cursor:default;
 }
 
 .slide{
   position:absolute;inset:0;
   display:flex;flex-direction:column;
   opacity:0;visibility:hidden;
-  transition:opacity .22s ease;
 }
 .slide.on{opacity:1;visibility:visible}
-.slide.measuring{visibility:hidden;opacity:0}
 
-/* ---------- 圖片 ---------- */
+/* ---------- 圖片區：68% 高、100% 寬 ---------- */
 .imgwrap{
-  flex:1 1 auto;min-height:0;
-  display:flex;align-items:center;justify-content:center;
-  padding:calc(var(--u)*0.8) calc(var(--u)*1.2) 0;
+  flex:0 0 68%;height:68%;width:100%;
   position:relative;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
 }
 .imgwrap img{
-  max-width:100%;max-height:100%;
+  width:100%;height:100%;
   object-fit:contain;
-  border-radius:calc(var(--u)*.6);
-  background:#fff;
-  box-shadow:0 calc(var(--u)*.3) calc(var(--u)*1.4) rgba(0,0,0,.45);
+  display:block;
 }
 .imgwrap img.hide{display:none}
-
 .ph{
-  height:100%;width:auto;
-  max-width:100%;max-height:100%;
-  aspect-ratio:16/9;
-  border-radius:calc(var(--u)*.6);
-  background:repeating-linear-gradient(135deg,#2a2f37 0 calc(var(--u)*2),#31363f 0 calc(var(--u)*4));
-  border:calc(var(--u)*.12) dashed rgba(245,240,230,.25);
+  position:absolute;inset:0;
+  background:repeating-linear-gradient(135deg,#23272e 0 calc(var(--u)*2),#2a2f37 0 calc(var(--u)*4));
   display:flex;align-items:center;justify-content:center;
-  color:rgba(245,240,230,.45);
-  font-size:calc(var(--u)*4);
+  color:rgba(245,240,230,.4);
+  font-size:calc(var(--u)*3.4);
   letter-spacing:.05em;
 }
 
-/* ---------- 文字面板 ---------- */
+/* ---------- 文字面板：32% 高 ---------- */
 .panel{
-  flex:0 0 auto;
-  padding:calc(var(--u)*1.0) calc(var(--u)*2.6) calc(var(--u)*1.7);
+  flex:0 0 32%;height:32%;
+  position:relative;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:calc(var(--u)*0.8) calc(var(--u)*3) calc(var(--u)*1.8);
   text-align:center;
-  font-size:var(--fs,calc(var(--u)*3));
-  line-height:1.26;
+  font-size:var(--fs);
+  line-height:1.25;
+  overflow:hidden;
 }
-.block + .block{margin-top:.62em}
+.pcontent{width:100%}
+.beats{width:100%}
+.beat{display:none}
+.beat.on{display:block;animation:fadeIn .15s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(.18em)}to{opacity:1;transform:none}}
+html.measuring #stage{visibility:hidden}
+html.measuring .beat.on{animation:none}
+html.measuring .item{transition:none}
+
 .line{
   display:block;
   white-space:nowrap;
-  overflow:visible;
+  line-height:1.25;
 }
-.line.dlg{color:var(--dlg);font-size:1.05em}
+.line.dlg{color:var(--dlg)}
 
-/* ---------- 疊字頁（封面 / 提問 / 結尾） ---------- */
-.slide.overlay .imgwrap{position:absolute;inset:0;padding:0}
-.slide.overlay .imgwrap img{border-radius:0;box-shadow:none;background:transparent}
-.slide.overlay .panel{position:absolute;left:0;right:0;z-index:2}
+/* 拍點 */
+.dots{
+  position:absolute;
+  left:0;right:0;bottom:calc(var(--u)*0.5);
+  display:flex;justify-content:center;gap:calc(var(--u)*0.55);
+  pointer-events:none;
+}
+.dots i{
+  width:calc(var(--u)*0.45);height:calc(var(--u)*0.45);
+  border-radius:50%;
+  background:rgba(245,240,230,.18);
+}
+.dots i.on{background:rgba(245,240,230,.5)}
+.dots.hide{display:none}
 
-/* 封面 */
-.slide[data-kind="cover"] .panel{
-  top:0;
-  padding:calc(var(--u)*5) calc(var(--u)*4) calc(var(--u)*4);
-  background:linear-gradient(180deg,rgba(10,12,16,.86) 0%,rgba(10,12,16,.66) 55%,rgba(10,12,16,0) 100%);
+/* ---------- 封面：滿版圖 + 疊字 ---------- */
+.slide[data-kind="cover"] .imgwrap{flex:1 1 100%;height:100%}
+.slide[data-kind="cover"] .imgwrap img{object-fit:cover}
+.cover-text{
+  position:absolute;left:0;right:0;top:0;
+  z-index:2;
+  padding:calc(var(--u)*4.5) calc(var(--u)*4) calc(var(--u)*5);
+  text-align:center;
+  background:linear-gradient(180deg,rgba(8,10,14,.55) 0%,rgba(8,10,14,.28) 55%,rgba(8,10,14,0) 100%);
 }
 .cover-title{
   display:block;white-space:nowrap;
-  font-size:2.75em;
-  font-weight:900;
-  letter-spacing:.06em;
-  line-height:1.15;
-  text-shadow:0 calc(var(--u)*.2) calc(var(--u)*.8) rgba(0,0,0,.6);
+  font-size:calc(var(--u)*9);
+  font-weight:900;color:#fff;
+  letter-spacing:.06em;line-height:1.12;
+  text-shadow:0 calc(var(--u)*.18) calc(var(--u)*.9) rgba(0,0,0,.85),
+              0 0 calc(var(--u)*2.2) rgba(0,0,0,.55);
 }
 .cover-sub{
   display:block;white-space:nowrap;
-  margin-top:.55em;
-  font-size:1em;
-  color:#e6dcc6;
-  letter-spacing:.08em;
+  margin-top:.5em;
+  font-size:calc(var(--u)*2.7);
+  color:#f2ead8;letter-spacing:.1em;
+  text-shadow:0 calc(var(--u)*.15) calc(var(--u)*.7) rgba(0,0,0,.85);
 }
 
-/* 提問頁 */
-.slide[data-kind="question"] .imgwrap::after{
-  content:"";position:absolute;inset:0;background:rgba(9,11,15,.62);
-}
-.slide[data-kind="question"] .panel{
-  top:50%;transform:translateY(-50%);
-  font-size:var(--fs,calc(var(--u)*8));
-  text-shadow:0 calc(var(--u)*.2) calc(var(--u)*.9) rgba(0,0,0,.65);
-}
-.slide[data-kind="question"] .block+.block{margin-top:.5em}
-.slide[data-kind="question"] .block2 .line{color:var(--dlg)}
-
-/* 啟發頁 */
-.slide[data-kind="lessons"] .panel{
-  padding:calc(var(--u)*0.8) calc(var(--u)*2.6) calc(var(--u)*2.0);
-}
+/* ---------- 啟發頁 ---------- */
+.slide[data-kind="lessons"] .panel{font-size:var(--fsL)}
 .lessons-title{
   display:block;white-space:nowrap;
-  font-size:1.38em;
-  font-weight:900;
-  letter-spacing:.1em;
-  margin-bottom:.5em;
-  color:#fff;
+  font-size:1.12em;font-weight:900;color:#fff;
+  letter-spacing:.1em;margin-bottom:.3em;
 }
+.items{width:100%}
 .item{
   display:flex;align-items:center;justify-content:center;
-  gap:.5em;
-  white-space:nowrap;
-  margin-top:.45em;
-  opacity:0;transform:translateY(.35em);
-  transition:opacity .35s ease, transform .35s ease;
+  gap:.45em;white-space:nowrap;margin-top:.22em;
+  opacity:0;transform:translateY(.2em);
+  transition:opacity .25s ease,transform .25s ease;
 }
 .item.show{opacity:1;transform:none}
+.item.past{opacity:.5}
 .item .num{
   flex:0 0 auto;
   display:inline-flex;align-items:center;justify-content:center;
-  width:1.5em;height:1.5em;border-radius:50%;
+  width:1.55em;height:1.55em;border-radius:50%;
   background:var(--dlg);color:#1a1206;
-  font-size:.8em;font-weight:900;
+  font-size:.78em;font-weight:900;
 }
 .item .txt{display:block;white-space:nowrap}
 
-/* 結尾頁 */
-.slide[data-kind="end"] .panel{
-  padding-bottom:calc(var(--u)*2.6);
-}
+/* ---------- 結尾頁 ---------- */
+.slide[data-kind="end"] .panel{font-size:var(--fsE)}
 .end-title{
   display:block;white-space:nowrap;
-  font-size:1.5em;font-weight:900;color:#fff;
-  letter-spacing:.08em;margin-bottom:.5em;
+  font-size:1.3em;font-weight:900;color:#fff;
+  letter-spacing:.08em;margin-bottom:.3em;
 }
 .btn{
-  display:inline-block;
-  margin-top:.8em;
-  padding:.42em 1.1em;
-  font-size:.86em;font-weight:700;
-  white-space:nowrap;
+  display:inline-block;margin-top:.42em;
+  padding:.32em 1em;
+  font-size:.74em;font-weight:700;white-space:nowrap;
   color:#1a1206;background:var(--dlg);
   border-radius:.5em;text-decoration:none;
-  box-shadow:0 calc(var(--u)*.2) calc(var(--u)*.7) rgba(0,0,0,.45);
+  box-shadow:0 calc(var(--u)*.15) calc(var(--u)*.6) rgba(0,0,0,.45);
 }
 .btn:hover{filter:brightness(1.08)}
 
 /* ---------- HUD ---------- */
 #hud{
-  position:absolute;left:0;right:0;bottom:0;
-  z-index:5;
+  position:absolute;left:0;right:0;bottom:0;z-index:5;
   display:flex;justify-content:space-between;align-items:flex-end;
-  padding:calc(var(--u)*.8) calc(var(--u)*1.4);
+  padding:calc(var(--u)*.7) calc(var(--u)*1.3);
   pointer-events:none;
-  font-size:calc(var(--u)*1.25);
-  font-weight:400;
-  color:rgba(245,240,230,.42);
-  letter-spacing:.06em;
+  font-size:calc(var(--u)*1.2);font-weight:400;
+  color:rgba(245,240,230,.4);letter-spacing:.06em;
 }
-#hint{opacity:.75}
 #counter{font-variant-numeric:tabular-nums}
 
-#measure{
-  position:absolute;left:-99999px;top:0;
-  visibility:hidden;white-space:nowrap;
-  font-weight:700;
-}
-
-@media (max-width:700px){
-  #hint{display:none}
-}
+@media (max-width:700px){#hint{display:none}}
