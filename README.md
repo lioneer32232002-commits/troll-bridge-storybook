@@ -66,7 +66,9 @@
 `cover` 用 `title` / `subtitle`，`lessons` 用 `title` / `items`（三條），
 `end` 用 `title` + `beats`（一拍）。
 
-改完 `pages.json` 後重新產生 `pages.js`：
+改完 `pages.json` 後重新產生 `pages.js`：`python tools/build_pages.py`。
+
+（等價的一行版）
 
 ```bash
 cd D:/繪本
