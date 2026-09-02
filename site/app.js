@@ -292,11 +292,16 @@
   }, { passive: false });
 
   function toggleFull() {
-    if (!document.fullscreenElement) {
-      (document.documentElement.requestFullscreen || function () {}).call(document.documentElement);
-    } else {
-      document.exitFullscreen();
-    }
+    try {
+      var el = document.documentElement;
+      var p;
+      if (!document.fullscreenElement) {
+        p = (el.requestFullscreen || el.webkitRequestFullscreen || function () {}).call(el);
+      } else {
+        p = (document.exitFullscreen || document.webkitExitFullscreen || function () {}).call(document);
+      }
+      if (p && p.catch) p.catch(function () {});
+    } catch (e) { /* 忽略：全螢幕被瀏覽器擋下不影響翻頁 */ }
   }
 
   window.addEventListener('resize', function () {
