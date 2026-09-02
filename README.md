@@ -35,7 +35,7 @@
 │  ├─ app.js              ← 分拍翻頁、字級自動計算、圖片預載
 │  ├─ pages.js            ← 由 pages.json 產生，不要手改
 │  ├─ worksheet.pdf       ← 結尾頁的下載連結指到這裡
-│  └─ img/p01.jpg … p16.jpg   （2752×1536，16:9）
+│  └─ img/p01.jpg … p16.jpg   ← 投影用縮圖（1920 寬，約 300KB），由 tools/optimize_img.py 產生
 ├─ pages.json             ← 每頁定稿文字（真源，分拍）＋生圖 prompt
 ├─ PLAN.md                ← 製作規劃與生圖流程
 ├─ story.txt              ← 從老師原稿抽出的純文字
@@ -126,3 +126,9 @@ python -m http.server 8765 --directory site
 
 - GitHub：https://github.com/lioneer32232002-commits/troll-bridge-storybook
 - Cloudflare Pages 專案：`troll-bridge-storybook`（正式分支 `main`，帳號 wizard32232002@gmail.com）
+
+## 插圖
+
+- 風格：Jean-Jacques Sempé 式細線墨水＋淡水彩，Gemini 網頁生成；角色設定與每頁 prompt 都在 `pages.json`。
+- 換圖流程：新圖存到 `art/pNN.jpg`（原尺寸），跑 `python tools/optimize_img.py`，再 commit + 部署。
+- 文字改動：第二回合原文「還沒和她發生關係」投影版改為「還沒學會怎麼好好愛一個人」。
