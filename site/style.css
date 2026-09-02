@@ -5,6 +5,7 @@
   --ink:#f5f0e6;
   --dlg:#ffd27a;
   --fs:60px;                /* 故事頁統一字級，由 app.js 計算 */
+  --fsQ:120px;              /* 提問頁 */
   --fsL:48px;               /* 啟發頁 */
   --fsE:48px;               /* 結尾頁 */
 }
@@ -128,12 +129,16 @@ html.measuring .item{transition:none}
   text-shadow:0 calc(var(--u)*.15) calc(var(--u)*.7) rgba(0,0,0,.85);
 }
 
-/* ---------- 啟發頁 ---------- */
-.slide[data-kind="lessons"] .panel{font-size:var(--fsL)}
+/* ---------- 提問頁 ---------- */
+.slide[data-kind="question"] .panel{font-size:var(--fsQ)}
+
+/* ---------- 啟發頁：圖 50% / 面板 50% ---------- */
+.slide[data-kind="lessons"] .imgwrap{flex:0 0 50%;height:50%}
+.slide[data-kind="lessons"] .panel{flex:0 0 50%;height:50%;font-size:var(--fsL)}
 .lessons-title{
   display:block;white-space:nowrap;
-  font-size:1.12em;font-weight:900;color:#fff;
-  letter-spacing:.1em;margin-bottom:.3em;
+  font-size:1.15em;font-weight:900;color:#fff;
+  letter-spacing:.1em;margin-bottom:.32em;
 }
 .items{width:100%}
 .item{

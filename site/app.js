@@ -11,8 +11,9 @@
   var counter = document.getElementById('counter');
   stage.appendChild(hud);
 
-  var IMG_H = 0.68;      // 圖片區佔舞台高度
-  var PANEL_H = 0.32;    // 文字面板佔舞台高度
+  var PANEL_H = 0.32;    // 一般頁：文字面板佔舞台高度（圖片區 68%）
+  var PANEL_H_L = 0.50;  // 啟發頁：圖是裝飾性的，面板佔一半（圖片區 50%）
+  var Q_CAP = 6.5;       // 提問頁字級上限（單位 u；1080p ≈ 125px）
   var LH = 1.25;         // 行高
   var PAD_T = 0.8;       // 面板上 padding（單位 u）
   var PAD_B = 1.8;       // 面板下 padding（單位 u，留給拍點）
@@ -206,6 +207,19 @@
 
   // 用 100px 參考字級量一次，直接換算出「不溢出的最大字級」，再實測校正
   var REF = 100;
+  // 量「文字本身」的寬度：整行是 block、寬度等於容器，用 scrollWidth 量不到字寬，
+  // 所以用 Range 取內容的實際外框。
+  function inkWidth(el) {
+    if (el.classList.contains('btn')) return el.offsetWidth;   // 按鈕含 padding
+    try {
+      var r = document.createRange();
+      r.selectNodeContents(el);
+      var w = r.getBoundingClientRect().width;
+      if (w > 0) return w;
+    } catch (e) { /* 退回保守值 */ }
+    return el.scrollWidth;
+  }
+
   // 在目前字級 curFs 下量測，回推「剛好不溢出」的字級
   function measureGroup(kinds, availH, availW, curFs) {
     var best = Infinity;
@@ -214,11 +228,9 @@
       if (!c) return;
       var h = c.getBoundingClientRect().height;
       if (h > 0) best = Math.min(best, curFs * availH / h);
-      var maxW = c.scrollWidth;
+      var maxW = 0;
       var els = c.querySelectorAll('.beat.on .line, .item, .lessons-title, .end-title, .btn');
-      for (var i = 0; i < els.length; i++) {
-        maxW = Math.max(maxW, els[i].scrollWidth, els[i].offsetWidth);
-      }
+      for (var i = 0; i < els.length; i++) maxW = Math.max(maxW, inkWidth(els[i]));
       if (maxW > 0) best = Math.min(best, curFs * availW / maxW);
     });
     return best;
@@ -247,15 +259,20 @@
       document.documentElement.style.setProperty('--u', u + 'px');
 
       var availH = H * PANEL_H - (PAD_T + PAD_B) * u;
+      var availHL = H * PANEL_H_L - (PAD_T + PAD_B) * u;   // 啟發頁面板較高
       var availW = W - 2 * PAD_X * u;
 
-      // 故事頁（normal + question）：全站所有拍取同一個字級，翻頁不跳動
-      var fsA = bestFit(['normal', 'question'], '--fs', availH, availW);
+      // 故事頁：全站所有拍取同一個字級，翻頁不跳動
+      var fsA = bestFit(['normal'], '--fs', availH, availW);
+      // 提問頁自成一組，兩拍同字級，塞得下就盡量大（設上限免得過頭）
+      var fsQ = Math.min(bestFit(['question'], '--fsQ', availH, availW), Math.floor(Q_CAP * u));
+      setVar('--fsQ', fsQ);
       // 啟發頁、結尾頁有標題／按鈕，內容高度不同，各自一組
-      var fsL = bestFit(['lessons'], '--fsL', availH, availW);
+      var fsL = bestFit(['lessons'], '--fsL', availHL, availW);
       var fsE = bestFit(['end'], '--fsE', availH, availW);
 
-      sizes = { fs: fsA, fsL: fsL, fsE: fsE, stage: [W, H], availH: availH, availW: availW,
+      sizes = { fs: fsA, fsQ: fsQ, fsL: fsL, fsE: fsE, stage: [W, H],
+                availH: availH, availHL: availHL, availW: availW,
                 ms: Math.round((window.performance || Date).now() - t0) };
     } finally {
       document.documentElement.classList.remove('measuring');
