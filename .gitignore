@@ -1,0 +1,8 @@
+*.docx~
+~$*.docx
+.claude/
+.wrangler/
+__pycache__/
+*.pyc
+Thumbs.db
+.DS_Store

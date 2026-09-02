@@ -1,0 +1,200 @@
+/* 巨魔怪的故事 — 課堂投影用繪本 */
+:root{
+  --u: 19.2px;              /* 舞台寬度的 1%，由 app.js 設定 */
+  --bg:#14171c;
+  --ink:#f5f0e6;
+  --dlg:#ffd27a;
+  --mat:#1c2027;
+  --line:rgba(245,240,230,.18);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",sans-serif;
+  font-weight:700;
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+
+/* ---------- 舞台：固定 16:9 ---------- */
+#stage{
+  position:relative;
+  width:min(100vw, 177.7778vh);
+  height:min(56.25vw, 100vh);
+  overflow:hidden;
+  background:var(--bg);
+  cursor:default;
+}
+
+.slide{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  opacity:0;visibility:hidden;
+  transition:opacity .22s ease;
+}
+.slide.on{opacity:1;visibility:visible}
+.slide.measuring{visibility:hidden;opacity:0}
+
+/* ---------- 圖片 ---------- */
+.imgwrap{
+  flex:1 1 auto;min-height:0;
+  display:flex;align-items:center;justify-content:center;
+  padding:calc(var(--u)*0.8) calc(var(--u)*1.2) 0;
+  position:relative;
+}
+.imgwrap img{
+  max-width:100%;max-height:100%;
+  object-fit:contain;
+  border-radius:calc(var(--u)*.6);
+  background:#fff;
+  box-shadow:0 calc(var(--u)*.3) calc(var(--u)*1.4) rgba(0,0,0,.45);
+}
+.imgwrap img.hide{display:none}
+
+.ph{
+  height:100%;width:auto;
+  max-width:100%;max-height:100%;
+  aspect-ratio:16/9;
+  border-radius:calc(var(--u)*.6);
+  background:repeating-linear-gradient(135deg,#2a2f37 0 calc(var(--u)*2),#31363f 0 calc(var(--u)*4));
+  border:calc(var(--u)*.12) dashed rgba(245,240,230,.25);
+  display:flex;align-items:center;justify-content:center;
+  color:rgba(245,240,230,.45);
+  font-size:calc(var(--u)*4);
+  letter-spacing:.05em;
+}
+
+/* ---------- 文字面板 ---------- */
+.panel{
+  flex:0 0 auto;
+  padding:calc(var(--u)*1.0) calc(var(--u)*2.6) calc(var(--u)*1.7);
+  text-align:center;
+  font-size:var(--fs,calc(var(--u)*3));
+  line-height:1.26;
+}
+.block + .block{margin-top:.62em}
+.line{
+  display:block;
+  white-space:nowrap;
+  overflow:visible;
+}
+.line.dlg{color:var(--dlg);font-size:1.05em}
+
+/* ---------- 疊字頁（封面 / 提問 / 結尾） ---------- */
+.slide.overlay .imgwrap{position:absolute;inset:0;padding:0}
+.slide.overlay .imgwrap img{border-radius:0;box-shadow:none;background:transparent}
+.slide.overlay .panel{position:absolute;left:0;right:0;z-index:2}
+
+/* 封面 */
+.slide[data-kind="cover"] .panel{
+  top:0;
+  padding:calc(var(--u)*5) calc(var(--u)*4) calc(var(--u)*4);
+  background:linear-gradient(180deg,rgba(10,12,16,.86) 0%,rgba(10,12,16,.66) 55%,rgba(10,12,16,0) 100%);
+}
+.cover-title{
+  display:block;white-space:nowrap;
+  font-size:2.75em;
+  font-weight:900;
+  letter-spacing:.06em;
+  line-height:1.15;
+  text-shadow:0 calc(var(--u)*.2) calc(var(--u)*.8) rgba(0,0,0,.6);
+}
+.cover-sub{
+  display:block;white-space:nowrap;
+  margin-top:.55em;
+  font-size:1em;
+  color:#e6dcc6;
+  letter-spacing:.08em;
+}
+
+/* 提問頁 */
+.slide[data-kind="question"] .imgwrap::after{
+  content:"";position:absolute;inset:0;background:rgba(9,11,15,.62);
+}
+.slide[data-kind="question"] .panel{
+  top:50%;transform:translateY(-50%);
+  font-size:var(--fs,calc(var(--u)*8));
+  text-shadow:0 calc(var(--u)*.2) calc(var(--u)*.9) rgba(0,0,0,.65);
+}
+.slide[data-kind="question"] .block+.block{margin-top:.5em}
+.slide[data-kind="question"] .block2 .line{color:var(--dlg)}
+
+/* 啟發頁 */
+.slide[data-kind="lessons"] .panel{
+  padding:calc(var(--u)*0.8) calc(var(--u)*2.6) calc(var(--u)*2.0);
+}
+.lessons-title{
+  display:block;white-space:nowrap;
+  font-size:1.38em;
+  font-weight:900;
+  letter-spacing:.1em;
+  margin-bottom:.5em;
+  color:#fff;
+}
+.item{
+  display:flex;align-items:center;justify-content:center;
+  gap:.5em;
+  white-space:nowrap;
+  margin-top:.45em;
+  opacity:0;transform:translateY(.35em);
+  transition:opacity .35s ease, transform .35s ease;
+}
+.item.show{opacity:1;transform:none}
+.item .num{
+  flex:0 0 auto;
+  display:inline-flex;align-items:center;justify-content:center;
+  width:1.5em;height:1.5em;border-radius:50%;
+  background:var(--dlg);color:#1a1206;
+  font-size:.8em;font-weight:900;
+}
+.item .txt{display:block;white-space:nowrap}
+
+/* 結尾頁 */
+.slide[data-kind="end"] .panel{
+  padding-bottom:calc(var(--u)*2.6);
+}
+.end-title{
+  display:block;white-space:nowrap;
+  font-size:1.5em;font-weight:900;color:#fff;
+  letter-spacing:.08em;margin-bottom:.5em;
+}
+.btn{
+  display:inline-block;
+  margin-top:.8em;
+  padding:.42em 1.1em;
+  font-size:.86em;font-weight:700;
+  white-space:nowrap;
+  color:#1a1206;background:var(--dlg);
+  border-radius:.5em;text-decoration:none;
+  box-shadow:0 calc(var(--u)*.2) calc(var(--u)*.7) rgba(0,0,0,.45);
+}
+.btn:hover{filter:brightness(1.08)}
+
+/* ---------- HUD ---------- */
+#hud{
+  position:absolute;left:0;right:0;bottom:0;
+  z-index:5;
+  display:flex;justify-content:space-between;align-items:flex-end;
+  padding:calc(var(--u)*.8) calc(var(--u)*1.4);
+  pointer-events:none;
+  font-size:calc(var(--u)*1.25);
+  font-weight:400;
+  color:rgba(245,240,230,.42);
+  letter-spacing:.06em;
+}
+#hint{opacity:.75}
+#counter{font-variant-numeric:tabular-nums}
+
+#measure{
+  position:absolute;left:-99999px;top:0;
+  visibility:hidden;white-space:nowrap;
+  font-weight:700;
+}
+
+@media (max-width:700px){
+  #hint{display:none}
+}
